@@ -43,6 +43,29 @@ app.get("/endUsers/addUser", async (req, res) => {
   res.render("addUser");
 });
 
+const validateUserData = (
+  first_name,
+  last_name,
+  user_name,
+  email,
+  contact_number,
+  date_of_birth,
+  password
+) => {
+  let valid = true;
+  let empty = "";
+  let exp = /[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/;
+  valid &= first_name != empty;
+  valid &= last_name != empty;
+  valid &= user_name != empty;
+  valid &= email != empty;
+  valid &= contact_number != empty;
+  valid &= date_of_birth != empty;
+  valid &= password != empty;
+  valid &= exp.test(contact_number);
+  return valid;
+};
+
 app.post("/endUsers/addUser", async (req, res) => {
   const {
     first_name,
@@ -58,8 +81,20 @@ app.post("/endUsers/addUser", async (req, res) => {
   );
   const id = Number(rows[0].max) + 1;
   const queryText = `insert into pht_db.end_user(first_name,last_name,user_name,email,contact_number,date_of_birth,password,user_role,user_id) values('${first_name}','${last_name}','${user_name}','${email}','${contact_number}','${date_of_birth}','${password}','end_user',${id})`;
+  const valid = validateUserData(
+    first_name,
+    last_name,
+    user_name,
+    email,
+    contact_number,
+    date_of_birth,
+    password
+  );
+  if (!valid) {
+    return res.render("addUserResult", { valid });
+  }
   await client.query(queryText);
-  res.render("addUserResult");
+  res.render("addUserResult", { valid });
 });
 
 app.get("/endUsers/editUser/:id", async (req, res) => {
@@ -81,8 +116,20 @@ app.patch("/endUsers/editUser/:id", async (req, res) => {
     password,
   } = req.body;
   const queryText = `update pht_db.end_user set first_name='${first_name}',last_name='${last_name}',user_name='${user_name}',email='${email}',contact_number='${contact_number}',date_of_birth='${date_of_birth}',password='${password}' where user_id=${id}`;
+  let valid = validateUserData(
+    first_name,
+    last_name,
+    user_name,
+    email,
+    contact_number,
+    date_of_birth,
+    password
+  );
+  if (!valid) {
+    return res.render("editUserResult", { valid });
+  }
   await client.query(queryText);
-  res.render("editUserResult");
+  res.render("editUserResult", { valid });
 });
 
 app.delete("/endUsers/deleteUser/:id", async (req, res) => {

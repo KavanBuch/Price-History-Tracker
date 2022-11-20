@@ -7,7 +7,11 @@
     <title>Price History Tracker</title>
 </head>
 <body>
+    <% if(valid) { %>
     <h1>User was edited Successfully</h1>
+    <% }else{ %> 
+    <h1>Something went wrong, some field might be empty or invalid.</fieldset></h1>
+    <% } %> 
     <a href="/home">Home</a>
     <a href="/endUsers">All users</a>
 </body>
