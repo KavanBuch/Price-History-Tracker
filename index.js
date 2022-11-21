@@ -212,7 +212,6 @@ app.get("/products/editProduct/:id", async (req, res) => {
   const { rows } = await client.query(
     `select * from pht_db.product_details where product_id=${id}`
   );
-  console.log(rows);
   res.render("editProduct", { product: rows[0] });
 });
 
@@ -249,6 +248,27 @@ app.delete("/products/deleteProduct/:id", async (req, res) => {
   const queryText = `delete from pht_db.product_details where product_id=${id}`;
   await client.query(queryText);
   res.redirect("/products");
+});
+
+//queries
+app.get("/queries", (req, res) => {
+  res.render("queryInput");
+});
+
+app.post("/queries", async (req, res) => {
+  const { query } = req.body;
+  let err = false;
+  if (query.length === 0) {
+    err = true;
+    return res.render("queryResult", { err, error: "Query Can't be empty" });
+  }
+  try {
+    const { rows } = await client.query(query);
+    res.render("queryResult", { err, rows });
+  } catch (error) {
+    err = true;
+    res.render("queryResult", { err, error });
+  }
 });
 
 //middleware which will run when no above routes will hit
