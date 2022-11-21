@@ -28,6 +28,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
 //home page
+app.get("/", (req, res) => {
+  res.redirect("/home");
+});
+
 app.get("/home", (req, res) => {
   res.render("home");
 });
@@ -144,6 +148,112 @@ app.get("/products", async (req, res) => {
   const queryText = `select * from pht_db.product_details`;
   const { rows } = await client.query(queryText);
   res.render("products", { products: rows });
+});
+
+app.get("/products/addProduct", (req, res) => {
+  res.render("addProduct");
+});
+
+const validateProductData = (
+  product_name,
+  description,
+  source_image,
+  actual_price,
+  price_offered,
+  pe_id,
+  ce_id
+) => {
+  let valid = true;
+  let exp = /[^1-9]/g;
+  valid &= product_name != "";
+  valid &= description != "";
+  valid &= source_image != "";
+  valid &= exp.test(actual_price) == false && Number(actual_price) > 0;
+  valid &= exp.test(price_offered) == false && Number(price_offered) > 0;
+  valid &= exp.test(ce_id) == false && ce_id >= 1 && Number(ce_id <= 9);
+  valid &=
+    exp.test(pe_id) == false && Number(pe_id) >= 1 && Number(ce_id <= 40);
+  return valid;
+};
+
+app.post("/products/addProduct", async (req, res) => {
+  const {
+    product_name,
+    description,
+    source_image,
+    actual_price,
+    price_offered,
+    pe_id,
+    ce_id,
+  } = req.body;
+  const { rows } = await client.query(
+    `select max(product_id) from pht_db.product_details`
+  );
+  const id = Number(rows[0].max) + 1;
+  const queryText = `insert into pht_db.product_details(product_name,description,source_image,actual_price,price_offered,pe_id,ce_id,product_id) values('${product_name}','${description}','${source_image}',${actual_price},${price_offered},${pe_id},${ce_id},${id})`;
+  let valid = validateProductData(
+    product_name,
+    description,
+    source_image,
+    actual_price,
+    price_offered,
+    pe_id,
+    ce_id
+  );
+  if (!valid) {
+    return res.render("addProductResult", { valid });
+  }
+  await client.query(queryText);
+  res.render("addProductResult", { valid });
+});
+
+app.get("/products/editProduct/:id", async (req, res) => {
+  const { id } = req.params;
+  const { rows } = await client.query(
+    `select * from pht_db.product_details where product_id=${id}`
+  );
+  console.log(rows);
+  res.render("editProduct", { product: rows[0] });
+});
+
+app.patch("/products/editProduct/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    product_name,
+    description,
+    source_image,
+    actual_price,
+    price_offered,
+    pe_id,
+    ce_id,
+  } = req.body;
+  const queryText = `update pht_db.product_details set product_name='${product_name}',description='${description}',source_image='${source_image}',actual_price='${actual_price}',price_offered='${price_offered}',ce_id=${ce_id},pe_id=${pe_id} where product_id=${id}`;
+  let valid = validateProductData(
+    product_name,
+    description,
+    source_image,
+    actual_price,
+    price_offered,
+    pe_id,
+    ce_id
+  );
+  if (!valid) {
+    return res.render("editProductResult", { valid });
+  }
+  await client.query(queryText);
+  res.render("editProductResult", { valid });
+});
+
+app.delete("/products/deleteProduct/:id", async (req, res) => {
+  const { id } = req.params;
+  const queryText = `delete from pht_db.product_details where product_id=${id}`;
+  await client.query(queryText);
+  res.redirect("/products");
+});
+
+//middleware which will run when no above routes will hit
+app.use((req, res, next) => {
+  return res.status(404).render("errorPage");
 });
 
 app.listen(80, () => {
