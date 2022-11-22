@@ -5,20 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Price History Tracker</title>
-    <style>
-      table,
-      th,
-      td {
-        border: 1px solid black;
-      }
-    </style>
+    <link rel="stylesheet" href="/css/endUsers.css" />
   </head>
   <body>
-    <a href="/home">Home</a>
+    <div class="navbar">
+      <h2><a href="/home" id="home">Home</a></h2>
+      <h2><a href="/endUsers/addUser" id="addUser">Click to add a User</a></h2>
+    </div>
     <h1>All Users</h1>
-    <h2><a href="/endUsers/addUser">Add an User</a></h2>
     <table>
-      <tr>
+      <tr id="headRow">
         <th>user_id</th>
         <th>First Name</th>
         <th>Last Name</th>
@@ -42,7 +38,10 @@
         <th><%= user.user_role %></th>
         <th><a href="/endUsers/editUser/<%= user.user_id %> ">Edit</a></th>
         <th>
-          <form action="/endUsers/deleteUser/<%= user.user_id %>?_method=DELETE" method="POST">
+          <form
+            action="/endUsers/deleteUser/<%= user.user_id %>?_method=DELETE"
+            method="POST"
+          >
             <button>Delete</button>
           </form>
         </th>

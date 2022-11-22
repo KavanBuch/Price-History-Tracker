@@ -26,6 +26,7 @@ app.set("views", path.join(__dirname, "/views"));
 //middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.use(express.static(path.join(__dirname, "public")));
 
 //home page
 app.get("/", (req, res) => {
@@ -164,15 +165,13 @@ const validateProductData = (
   ce_id
 ) => {
   let valid = true;
-  let exp = /[^1-9]/g;
   valid &= product_name != "";
   valid &= description != "";
   valid &= source_image != "";
-  valid &= exp.test(actual_price) == false && Number(actual_price) > 0;
-  valid &= exp.test(price_offered) == false && Number(price_offered) > 0;
-  valid &= exp.test(ce_id) == false && ce_id >= 1 && Number(ce_id <= 9);
-  valid &=
-    exp.test(pe_id) == false && Number(pe_id) >= 1 && Number(ce_id <= 40);
+  valid &= Number(actual_price) > 0;
+  valid &= Number(price_offered) > 0;
+  valid &= Number(ce_id) >= 1 && Number(ce_id) <= 9;
+  valid &= Number(pe_id) >= 1 && Number(pe_id) <= 40;
   return valid;
 };
 

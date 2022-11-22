@@ -5,20 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Price History Tracker</title>
-    <style>
-      table,
-      th,
-      td {
-        border: 1px solid black;
-      }
-    </style>
+    <link rel="stylesheet" href="/css/products.css" />
   </head>
   <body>
-    <a href="/home">Home</a>
+    <div class="navbar">
+      <h2><a href="/home" id="home">Home</a></h2>
+      <h2><a href="/products/addProduct" id="addProduct">Click to add a product</a></h2>
+    </div>
     <h1>All Products</h1>
-    <h2><a href="/products/addProduct">Add Product</a></h2>
     <table>
-      <tr>
+      <tr id="headRow">
         <th>product_id</th>
         <th>Product Name</th>
         <th>Description</th>
@@ -40,10 +36,17 @@
         <th><%= product.price_offered %></th>
         <th><%= product.pe_id %></th>
         <th><%= product.ce_id %></th>
-        <th><a href="/products/editProduct/<%= product.product_id %> ">Edit</a></th>
-        <th><form action="/products/deleteProduct/<%= product.product_id %>?_method=DELETE" method="post">
-          <button>Delete</button>
-        </form></th>
+        <th>
+          <a href="/products/editProduct/<%= product.product_id %> ">Edit</a>
+        </th>
+        <th>
+          <form
+            action="/products/deleteProduct/<%= product.product_id %>?_method=DELETE"
+            method="post"
+          >
+            <button>Delete</button>
+          </form>
+        </th>
       </tr>
       <% } %>
     </table>

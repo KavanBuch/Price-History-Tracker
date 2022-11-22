@@ -1,0 +1,41 @@
+body {
+  background-color: cornflowerblue;
+  color: aliceblue;
+}
+
+h1 {
+  color: black;
+  text-align: center;
+  border: 2px solid black;
+  border-radius: 12px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form * {
+  margin: auto;
+  margin-bottom: 5px;
+}
+
+label {
+  display: block;
+  color: black;
+}
+
+input {
+  width: 50vw;
+}
+
+button {
+  padding: 7px;
+  border: 2px solid black;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: cornflowerblue;
+  font-weight: bolder;
+}
