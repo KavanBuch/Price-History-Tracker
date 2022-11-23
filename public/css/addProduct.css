@@ -1,5 +1,7 @@
 body {
-  background-color: cornflowerblue;
+  background: rgb(75, 19, 134);
+  background: rgb(49, 19, 134);
+  background: linear-gradient(to right, #647dee, #7f53ac);
   color: aliceblue;
 }
 
