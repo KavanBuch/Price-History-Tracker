@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -8,7 +9,7 @@ const client = new Client({
   user: "postgres",
   host: "localhost",
   database: "Price_History_Tracker",
-  password: "pgadKB02@",
+  password: process.env.DB_PASSWORD,
   port: 5432,
 });
 
